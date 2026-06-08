@@ -1,5 +1,8 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "../firebase";
+
 
 export default function Passenger() {
   const navigate = useNavigate();
@@ -67,11 +70,12 @@ const { state } = useLocation();
         />
 
         <button
-  onClick={() => {
-    const bookingId = "PB" + Math.floor(100000 + Math.random() * 900000);
+       onClick={async () => {
+        const bookingId =
+      "PB" + Math.floor(100000 + Math.random() * 900000);
 
-    navigate("/ticket", {
-      state: {
+       try {
+      await addDoc(collection(db, "bookings"), {
         name,
         age,
         gender,
@@ -79,13 +83,29 @@ const { state } = useLocation();
         email,
         bookingId,
         selectedSeat: state?.selectedSeat,
-      },
-    });
-  }}
-  className="w-full bg-yellow-400 text-black py-3 rounded-xl font-bold"
->
-  Confirm Booking
-   </button>
+        createdAt: new Date(),
+      });
+
+      navigate("/ticket", {
+        state: {
+          name,
+          age,
+          gender,
+          mobile,
+          email,
+          bookingId,
+          selectedSeat: state?.selectedSeat,
+        },
+      });
+       } catch (error) {
+      console.error(error);
+      alert("Booking save failed");
+    }
+    }}
+       className="w-full bg-yellow-400 text-black py-3 rounded-xl font-bold"
+       >
+       Confirm Booking
+      </button>
       </div>
 
     </div>
