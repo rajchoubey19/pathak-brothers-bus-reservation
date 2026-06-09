@@ -26,6 +26,10 @@ const { state } = useLocation();
         Selected Seat: {state?.selectedSeat}
         </p>
 
+        <p className="text-yellow-400 text-center mb-4">
+        Bus: {state?.busName}
+        </p>
+
         <input
           type="text"
           placeholder="Full Name"
@@ -83,6 +87,7 @@ const { state } = useLocation();
         email,
         bookingId,
         selectedSeat: state?.selectedSeat,
+        busName: state?.busName,
         createdAt: new Date(),
       });
 
@@ -95,6 +100,7 @@ const { state } = useLocation();
           email,
           bookingId,
           selectedSeat: state?.selectedSeat,
+          busName: state?.busName,
         },
       });
        } catch (error) {

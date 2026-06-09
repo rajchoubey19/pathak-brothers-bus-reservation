@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
@@ -8,6 +8,7 @@ export default function Booking() {
   const [bookedSeats, setBookedSeats] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { state } = useLocation();
 
   useEffect(() => {
     const fetchBookedSeats = async () => {
@@ -52,11 +53,15 @@ export default function Booking() {
         Select Your Seat
       </h1>
 
+      <p className="text-center text-yellow-400 text-xl mb-6">
+     Bus: {state?.busName}
+     </p>
+
       {loading && (
   <p className="text-center text-yellow-400 mb-6">
     Loading booked seats...
   </p>
-)}
+     )}
 
       <div className="max-w-3xl mx-auto mb-6">
         <div className="flex justify-between items-center bg-zinc-800 rounded-2xl p-4 border border-zinc-700">
@@ -111,17 +116,18 @@ export default function Booking() {
             </p>
 
             <button
-              onClick={() => {
-                navigate("/otp", {
-                  state: {
-                    selectedSeat: selectedSeat,
-                  },
-                });
-              }}
-              className="mt-4 bg-yellow-400 text-black px-6 py-3 rounded-xl font-bold"
-            >
-              Continue Booking
-            </button>
+           onClick={() => {
+           navigate("/otp", {
+            state: {
+             selectedSeat: selectedSeat,
+            busName: state?.busName,
+          },
+         });
+         }}
+         className="mt-4 bg-yellow-400 text-black px-6 py-3 rounded-xl font-bold"
+        >
+         Continue Booking
+        </button>
           </div>
         )}
 

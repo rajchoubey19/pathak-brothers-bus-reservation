@@ -16,6 +16,10 @@ const { state } = useLocation();
           OTP Login
         </h1>
 
+        <p className="text-yellow-400 text-center mb-2">
+       Bus: {state?.busName}
+       </p>
+
         <p className="text-center text-yellow-400 mb-4">
        Selected Seat: {state?.selectedSeat}
         </p>
@@ -41,7 +45,14 @@ const { state } = useLocation();
         />
 
         <button
-  onClick={() => navigate("/passenger", { state })}
+  onClick={() =>
+    navigate("/passenger", {
+      state: {
+  selectedSeat: state?.selectedSeat,
+  busName: state?.busName,
+   },
+    })
+  }
   className="w-full bg-yellow-400 text-black py-3 rounded-xl font-bold"
 >
   Verify OTP

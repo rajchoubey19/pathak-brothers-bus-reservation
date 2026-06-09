@@ -37,7 +37,8 @@ const downloadTicket = () => {
         <div className="space-y-4 text-lg">
 
           <p>
-            <span className="text-zinc-400">Bus:</span> Shiv Shakti
+            <span className="text-zinc-400">Bus:</span>{" "}
+           {state?.busName || "Shiv Shakti"}
           </p>
 
           <p>

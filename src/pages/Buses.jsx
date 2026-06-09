@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 export default function Buses() {
   const navigate = useNavigate();
   const buses = [
-    { id: 1, time: "8:00 PM" },
-    { id: 2, time: "9:00 PM" },
-    { id: 3, time: "10:00 PM" },
-    { id: 4, time: "11:00 PM" },
-  ];
+  { id: 1, name: "Shiv Shakti", time: "8:00 PM" },
+  { id: 2, name: "Shiv Shakti", time: "9:00 PM" },
+  { id: 3, name: "Shiv Shakti", time: "10:00 PM" },
+  { id: 4, name: "Shiv Shakti", time: "11:00 PM" },
+];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black text-white p-8">
@@ -35,7 +35,13 @@ export default function Buses() {
     </div>
 
      <button
-  onClick={() => navigate("/booking")}
+  onClick={() =>
+    navigate("/booking", {
+      state: {
+        busName: bus.name,
+      },
+    })
+  }
   className="bg-yellow-400 text-black px-5 py-2 rounded-xl font-bold hover:scale-105 transition"
 >
   Book Now
