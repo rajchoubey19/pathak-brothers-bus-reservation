@@ -12,6 +12,9 @@ export default function Passenger() {
   const [gender, setGender] = useState("");
   const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
+  const [journeyDate, setJourneyDate] = useState("");
+  const [fromCity, setFromCity] = useState("");
+const [toCity, setToCity] = useState("");
 const { state } = useLocation();
 
   return (
@@ -73,11 +76,48 @@ const { state } = useLocation();
           className="w-full bg-black border border-zinc-700 p-4 rounded-xl outline-none mb-6"
         />
 
+        <input
+       type="date"
+       value={journeyDate}
+       onChange={(e) => setJourneyDate(e.target.value)}
+       className="w-full bg-black border border-zinc-700 p-4 rounded-xl outline-none mb-6"
+       />
+       
+       <select
+      value={fromCity}
+      onChange={(e) => setFromCity(e.target.value)}
+      className="w-full bg-black border border-zinc-700 p-4 rounded-xl outline-none mb-4"
+      >
+      <option value="">Select From City</option>
+     <option>Indore</option>
+     <option>Bhopal</option>
+     <option>Ujjain</option>
+     <option>Maihar</option>
+     <option>Kashi</option>
+     </select>
+
+    <select
+  value={toCity}
+  onChange={(e) => setToCity(e.target.value)}
+  className="w-full bg-black border border-zinc-700 p-4 rounded-xl outline-none mb-6"
+>
+  <option value="">Select To City</option>
+  <option>Indore</option>
+  <option>Bhopal</option>
+  <option>Ujjain</option>
+  <option>Maihar</option>
+  <option>Kashi</option>
+      </select>
+
         <button
        onClick={async () => {
         const bookingId =
       "PB" + Math.floor(100000 + Math.random() * 900000);
 
+         if (fromCity === toCity) {
+           alert("From City and To City cannot be the same");
+          return;
+         }
        try {
       await addDoc(collection(db, "bookings"), {
         name,
@@ -88,6 +128,9 @@ const { state } = useLocation();
         bookingId,
         selectedSeat: state?.selectedSeat,
         busName: state?.busName,
+        journeyDate,
+        fromCity,
+        toCity,
         createdAt: new Date(),
       });
 
@@ -101,6 +144,9 @@ const { state } = useLocation();
           bookingId,
           selectedSeat: state?.selectedSeat,
           busName: state?.busName,
+          journeyDate,
+          fromCity,
+          toCity,
         },
       });
        } catch (error) {
