@@ -135,10 +135,10 @@ export default function Passenger() {
         email,
         bookingId,
         selectedSeat: state?.selectedSeat,
-        busName: state?.busName,
-        journeyDate: state?.date,
-        fromCity: state?.from,
-        toCity: state?.to,
+        busName: state?.busName || "Shiv Shakti",
+        journeyDate: state?.date || "N/A", 
+        fromCity: state?.from || "N/A",
+        toCity: state?.to || "N/A",
         createdAt: new Date(),
       });
 
@@ -158,8 +158,8 @@ export default function Passenger() {
         },
       });
        } catch (error) {
-      console.error(error);
-      alert("Booking save failed");
+      console.error("Booking Error:", error);
+alert(error.message);
     }
     }}
        className="w-full bg-yellow-400 text-black py-3 rounded-xl font-bold"

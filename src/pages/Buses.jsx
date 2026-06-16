@@ -7,17 +7,25 @@ export default function Buses() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [buses, setBuses] = useState([]);
-  const [totalBookings, setTotalBookings] = useState(0);
+  const [routeBookings, setRouteBookings] = useState(0);
   useEffect(() => {
   const fetchRoutes = async () => {
     const querySnapshot = await getDocs(collection(db, "routes"));
 
-    const bookingSnapshot = await getDocs(
-  collection(db, "bookings")
+    const bookingSnapshot = await getDocs(collection(db, "bookings"));
+
+const bookingsData = bookingSnapshot.docs.map((doc) => ({
+  id: doc.id,
+  ...doc.data(),
+}));
+
+const filteredBookings = bookingsData.filter(
+  (booking) =>
+    booking.fromCity?.toLowerCase().trim() === state?.from?.toLowerCase().trim() &&
+booking.toCity?.toLowerCase().trim() === state?.to?.toLowerCase().trim()
 );
 
-setTotalBookings(bookingSnapshot.size);
-
+setRouteBookings(filteredBookings.length);
     const routesData = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -25,8 +33,8 @@ setTotalBookings(bookingSnapshot.size);
 
     const filteredRoutes = routesData.filter(
       (bus) =>
-        bus.from?.toLowerCase() === state?.from?.toLowerCase() &&
-        bus.to?.toLowerCase() === state?.to?.toLowerCase()
+        bus.from?.toLowerCase().trim() === state?.from?.toLowerCase().trim() &&
+bus.to?.toLowerCase().trim() === state?.to?.toLowerCase().trim()
     );
 
     setBuses(filteredRoutes);
@@ -82,7 +90,7 @@ setTotalBookings(bookingSnapshot.size);
       </p>
 
       <p className="text-blue-400 font-semibold mt-1">
-      Seats Available: {45 - totalBookings}
+      Seats Available: {45 - routeBookings}
      </p>
 
       <p className="text-green-400 font-bold mt-2">
@@ -93,12 +101,13 @@ setTotalBookings(bookingSnapshot.size);
      <button
   onClick={() =>
     navigate("/booking", {
-      state: {
-  busName: bus.name,
+    state: {
+  busName: bus.busName,
   from: state?.from,
   to: state?.to,
   date: state?.date,
-},
+},  
+
     })
   }
   className="bg-yellow-400 text-black px-5 py-2 rounded-xl font-bold hover:scale-105 transition"

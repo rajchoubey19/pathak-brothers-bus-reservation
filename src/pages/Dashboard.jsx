@@ -5,6 +5,7 @@ import {
   deleteDoc,
   doc,
   addDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +23,7 @@ const [to, setTo] = useState("");
 const [fare, setFare] = useState("");
 const [time, setTime] = useState("");
 const [type, setType] = useState("");
+const [editRouteId, setEditRouteId] = useState(null);
 
   useEffect(() => {
     const isAdmin = localStorage.getItem("adminLogin");
@@ -92,7 +94,29 @@ setRoutes(routesData);
     return;
   }
 
-  await addDoc(collection(db, "routes"), {
+  if (editRouteId) {
+  await updateDoc(doc(db, "routes", editRouteId), {
+    busName,
+    from,
+    to,
+    fare,
+    time,
+    type,
+  });
+
+  alert("Route Updated Successfully");
+
+  setRoutes(
+    routes.map((route) =>
+      route.id === editRouteId
+        ? { ...route, busName, from, to, fare, time, type }
+        : route
+    )
+  );
+
+  setEditRouteId(null);
+} else {
+  const docRef = await addDoc(collection(db, "routes"), {
     busName,
     from,
     to,
@@ -103,12 +127,41 @@ setRoutes(routesData);
 
   alert("Route Added Successfully");
 
+  setRoutes([
+    ...routes,
+    {
+      id: docRef.id,
+      busName,
+      from,
+      to,
+      fare,
+      time,
+      type,
+    },
+  ]);
+
+  setTotalRoutes((prev) => prev + 1);
+}
+
+  alert("Route Added Successfully");
+
   setBusName("");
   setFrom("");
   setTo("");
   setFare("");
   setTime("");
   setType("");
+};
+
+const editRoute = (route) => {
+  setEditRouteId(route.id);
+
+  setBusName(route.busName || "");
+  setFrom(route.from || "");
+  setTo(route.to || "");
+  setFare(route.fare || "");
+  setTime(route.time || "");
+  setType(route.type || "");
 };
 
   const deleteRoute = async (id) => {
@@ -201,11 +254,11 @@ return (
   </div>
 
   <button
-    onClick={addRoute}
-    className="mt-4 bg-yellow-400 text-black px-6 py-3 rounded-xl font-bold hover:scale-105 transition"
-  >
-    Add Route
-  </button>
+  onClick={addRoute}
+  className="mt-4 bg-yellow-400 text-black px-6 py-3 rounded-xl font-bold hover:scale-105 transition"
+>
+  {editRouteId ? "Update Route" : "Add Route"}
+</button>
 </div>
 
       <input
@@ -299,12 +352,21 @@ return (
       🚌 {route.from} → {route.to}
     </p>
 
-    <button
-      onClick={() => deleteRoute(route.id)}
-      className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg text-sm"
-    >
-      Delete
-    </button>
+    <div className="flex gap-2">
+  <button
+    onClick={() => editRoute(route)}
+    className="bg-yellow-400 text-black px-3 py-1 rounded-lg text-sm"
+  >
+    Edit
+  </button>
+
+  <button
+    onClick={() => deleteRoute(route.id)}
+    className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg text-sm"
+  >
+    Delete
+  </button>
+</div>
   </div>
 ))}
 </div>

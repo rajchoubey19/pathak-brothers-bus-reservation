@@ -37,25 +37,30 @@ const handleSearch = () => {
         </h1>
 
         <ul className="hidden md:flex gap-8 text-lg">
-     <li>
+  <li>
     <Link to="/" className="hover:text-yellow-400">
       Home
     </Link>
-    </li>
+  </li>
 
-    <li>
-    <Link to="/buses" className="hover:text-yellow-400">
-      Buses
+  <li>
+    <Link to="/my-bookings" className="hover:text-yellow-400">
+      My Bookings
     </Link>
-     </li>
+  </li>
 
-     <li>
-    <a href="#contact" className="hover:text-yellow-400">
+  <li>
+    <Link to="/contact" className="hover:text-yellow-400">
       Contact
-       </a>
-      </li>
-      </ul>
+    </Link>
+  </li>
 
+  <li>
+    <Link to="/login" className="hover:text-yellow-400">
+      Account
+    </Link>
+  </li>
+</ul>
       </nav>
 
       {/* Hero Section */}
