@@ -14,8 +14,8 @@ export default function Passenger() {
   const [email, setEmail] = useState("");
   const [journeyDate, setJourneyDate] = useState("");
   const [fromCity, setFromCity] = useState("");
-const [toCity, setToCity] = useState("");
-const { state } = useLocation();
+  const [toCity, setToCity] = useState("");
+  const { state } = useLocation();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black text-white flex items-center justify-center p-6">
@@ -32,6 +32,14 @@ const { state } = useLocation();
         <p className="text-yellow-400 text-center mb-4">
         Bus: {state?.busName}
         </p>
+
+        <p className="text-zinc-400 text-center mb-2">
+  {state?.from || "N/A"} → {state?.to || "N/A"}
+</p>
+
+<p className="text-zinc-400 text-center mb-4">
+  Journey Date: {state?.date || "N/A"}
+</p>
 
         <input
           type="text"
@@ -128,9 +136,9 @@ const { state } = useLocation();
         bookingId,
         selectedSeat: state?.selectedSeat,
         busName: state?.busName,
-        journeyDate,
-        fromCity,
-        toCity,
+        journeyDate: state?.date,
+        fromCity: state?.from,
+        toCity: state?.to,
         createdAt: new Date(),
       });
 
@@ -144,9 +152,9 @@ const { state } = useLocation();
           bookingId,
           selectedSeat: state?.selectedSeat,
           busName: state?.busName,
-          journeyDate,
-          fromCity,
-          toCity,
+          journeyDate: state?.date,
+          fromCity: state?.from,
+          toCity: state?.to,
         },
       });
        } catch (error) {

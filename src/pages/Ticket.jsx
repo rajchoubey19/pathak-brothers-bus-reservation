@@ -81,8 +81,7 @@ export default function Ticket() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black text-white flex items-center justify-center p-6">
 
-      <div className="w-full max-w-2xl bg-zinc-900 border border-yellow-400 rounded-[32px] overflow-hidden shadow-2xl">
-
+      <div id="ticket-card" className="w-full max-w-2xl bg-zinc-900 border border-yellow-400 rounded-[32px] overflow-hidden shadow-2xl">
         <div className="bg-yellow-400 text-black p-6 text-center">
           <h1 className="text-4xl font-extrabold">
             Pathak Brothers
@@ -141,7 +140,7 @@ export default function Ticket() {
             </p>
           </div>
 
-          <div className="flex flex-col items-center mb-6">
+          <div className="flex flex-col items-center mb-2">
           <QRCodeCanvas
           value={JSON.stringify({
           bookingId: state?.bookingId,
@@ -149,13 +148,20 @@ export default function Ticket() {
           seat: state?.selectedSeat,
           bus: state?.busName,
          })}
-         size={140}
+         size={70}
         />
 
         <p className="text-zinc-400 mt-3 text-sm">
          Scan to verify booking
          </p>
          </div>
+
+         <button
+          onClick={() => window.print()}
+          className="w-full bg-green-500 text-white py-3 rounded-xl font-bold mb-4" 
+          >
+          Print Ticket
+          </button>
 
           <button
             onClick={downloadTicket}

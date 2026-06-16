@@ -4,6 +4,7 @@ import {
   getDocs,
   deleteDoc,
   doc,
+  addDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +14,14 @@ export default function Dashboard() {
 
   const [bookings, setBookings] = useState([]);
   const [search, setSearch] = useState("");
+  const [totalRoutes, setTotalRoutes] = useState(0);
+  const [routes, setRoutes] = useState([]);
+  const [busName, setBusName] = useState("");
+const [from, setFrom] = useState("");
+const [to, setTo] = useState("");
+const [fare, setFare] = useState("");
+const [time, setTime] = useState("");
+const [type, setType] = useState("");
 
   useEffect(() => {
     const isAdmin = localStorage.getItem("adminLogin");
@@ -23,15 +32,25 @@ export default function Dashboard() {
    }
 
     const fetchBookings = async () => {
-      const querySnapshot = await getDocs(collection(db, "bookings"));
+  const querySnapshot = await getDocs(collection(db, "bookings"));
 
-      const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+  const data = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
 
-      setBookings(data);
-    };
+  setBookings(data);
+
+  const routesSnapshot = await getDocs(collection(db, "routes"));
+  setTotalRoutes(routesSnapshot.size);
+
+  const routesData = routesSnapshot.docs.map((doc) => ({
+  id: doc.id,
+  ...doc.data(),
+}));
+
+setRoutes(routesData);
+};
 
     fetchBookings();
   }, []);
@@ -40,6 +59,14 @@ export default function Dashboard() {
   const bookedSeats = bookings.length;
   const totalSeats = 45;
   const availableSeats = totalSeats - bookedSeats;
+  const todaysBookings = bookings.filter((booking) => {
+  if (!booking.createdAt?.seconds) return false;
+
+  const bookingDate = new Date(booking.createdAt.seconds * 1000);
+  const today = new Date();
+
+  return bookingDate.toDateString() === today.toDateString();
+}).length;
 
   const filteredBookings = bookings.filter(
   (booking) =>
@@ -59,7 +86,46 @@ export default function Dashboard() {
   setBookings(bookings.filter((booking) => booking.id !== id));
 };
 
-  return (
+ const addRoute = async () => {
+  if (!busName || !from || !to || !fare || !time || !type) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  await addDoc(collection(db, "routes"), {
+    busName,
+    from,
+    to,
+    fare,
+    time,
+    type,
+  });
+
+  alert("Route Added Successfully");
+
+  setBusName("");
+  setFrom("");
+  setTo("");
+  setFare("");
+  setTime("");
+  setType("");
+};
+
+  const deleteRoute = async (id) => {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this route?"
+  );
+
+  if (!confirmDelete) return;
+
+  await deleteDoc(doc(db, "routes", id));
+
+  setRoutes(routes.filter((route) => route.id !== id));
+
+  setTotalRoutes((prev) => prev - 1);
+};
+
+return (
     <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black text-white p-8">
       <h1 className="text-4xl font-bold text-yellow-400 text-center mb-8">
         Admin Panel
@@ -76,6 +142,72 @@ export default function Dashboard() {
   </button>
      </div>
       <div className="max-w-md mx-auto mb-6">
+
+<div className="bg-zinc-900 border border-zinc-700 rounded-3xl p-6 mb-8">
+  <h2 className="text-2xl font-bold text-yellow-400 mb-4">
+    ➕ Add New Route
+  </h2>
+
+  <div className="grid md:grid-cols-3 gap-4">
+
+    <input
+      type="text"
+      placeholder="Bus Name"
+      value={busName}
+      onChange={(e) => setBusName(e.target.value)}
+      className="bg-black border border-zinc-700 p-3 rounded-xl"
+    />
+
+    <input
+      type="text"
+      placeholder="From"
+      value={from}
+      onChange={(e) => setFrom(e.target.value)}
+      className="bg-black border border-zinc-700 p-3 rounded-xl"
+    />
+
+    <input
+      type="text"
+      placeholder="To"
+      value={to}
+      onChange={(e) => setTo(e.target.value)}
+      className="bg-black border border-zinc-700 p-3 rounded-xl"
+    />
+
+    <input
+      type="text"
+      placeholder="Fare"
+      value={fare}
+      onChange={(e) => setFare(e.target.value)}
+      className="bg-black border border-zinc-700 p-3 rounded-xl"
+    />
+
+    <input
+      type="text"
+      placeholder="Time"
+      value={time}
+      onChange={(e) => setTime(e.target.value)}
+      className="bg-black border border-zinc-700 p-3 rounded-xl"
+    />
+
+    <input
+      type="text"
+      placeholder="Type"
+      value={type}
+      onChange={(e) => setType(e.target.value)}
+      className="bg-black border border-zinc-700 p-3 rounded-xl"
+    />
+
+  </div>
+
+  <button
+    onClick={addRoute}
+    className="mt-4 bg-yellow-400 text-black px-6 py-3 rounded-xl font-bold hover:scale-105 transition"
+  >
+    Add Route
+  </button>
+</div>
+
       <input
         type="text"
         placeholder="Search by Mobile Number or Booking ID"
@@ -107,14 +239,78 @@ export default function Dashboard() {
           </p>
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-5 text-center">
-          <h2 className="text-zinc-400">Bus Name</h2>
-          <p className="text-xl font-bold text-blue-400">
-            Shiv Shakti
+        <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 text-center">
+       <h2 className="text-zinc-400 text-lg">
+        Today's Bookings
+        </h2>
+
+        <p className="text-4xl font-bold text-yellow-400 mt-2">
+        {todaysBookings}
+        </p>
+        </div>
+        <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 mb-8">
+  <h2 className="text-2xl font-bold text-yellow-400 mb-4">
+    Recent Bookings
+  </h2>
+
+  <div className="space-y-3">
+    {bookings.slice(0, 5).map((booking, index) => (
+      <div
+        key={index}
+        className="flex justify-between items-center bg-black border border-zinc-700 rounded-xl p-3"
+      >
+        <div>
+          <p className="font-bold">
+            {booking.name}
+          </p>
+
+          <p className="text-sm text-zinc-400">
+            Seat {booking.selectedSeat}
           </p>
         </div>
-      </div>
 
+        <div className="text-yellow-400 font-bold">
+          {booking.busName}
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+        
+
+        <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-5 text-center">
+  <h2 className="text-zinc-400">Total Routes</h2>
+
+  <p className="text-3xl font-bold text-purple-400">
+    {totalRoutes}
+  </p>
+
+    <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 mb-8">
+  <h2 className="text-2xl font-bold text-yellow-400 mb-4">
+    Available Routes
+  </h2>
+
+  {routes.map((route) => (
+  <div
+    key={route.id}
+    className="flex justify-between items-center bg-black border border-zinc-700 rounded-xl p-3"
+  >
+    <p className="text-zinc-300">
+      🚌 {route.from} → {route.to}
+    </p>
+
+    <button
+      onClick={() => deleteRoute(route.id)}
+      className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg text-sm"
+    >
+      Delete
+    </button>
+  </div>
+))}
+</div>
+
+</div>
+      </div>
       <div className="max-w-6xl mx-auto bg-zinc-900 border border-zinc-700 rounded-3xl p-6 overflow-x-auto">
         <table className="w-full text-left">
           <thead>

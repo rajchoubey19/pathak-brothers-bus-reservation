@@ -1,1 +1,77 @@
 @import "tailwindcss";
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #ticket-card,
+  #ticket-card * {
+    visibility: visible;
+  }
+
+  #ticket-card {
+  transform: scale(0.85);
+  transform-origin: top left;
+}
+
+#ticket-card {
+  zoom: 75%;
+}
+
+.grid {
+  display: block !important;
+}
+
+#ticket-card p {
+  margin-bottom: 4px !important;
+}
+
+  #ticket-card {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 190mm !important;
+    max-width: 190mm !important;
+    background: white !important;
+    color: black !important;
+    border: 1px solid black !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    overflow: hidden !important;
+  }
+
+  #ticket-card div {
+    background: white !important;
+    color: black !important;
+  }
+
+  #ticket-card p,
+  #ticket-card h1,
+  #ticket-card h2,
+  #ticket-card h3,
+  #ticket-card span {
+    color: black !important;
+  }
+
+  #ticket-card button {
+    display: none !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 10mm;
+  }
+}
+@keyframes marquee {
+  0% {
+    transform: translateX(30%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 12s linear infinite;
+}

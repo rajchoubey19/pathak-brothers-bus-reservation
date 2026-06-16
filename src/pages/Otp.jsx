@@ -47,12 +47,14 @@ export default function Otp() {
     }
 
     navigate("/passenger", {
-      state: {
-        selectedSeat: state?.selectedSeat,
-        busName: state?.busName,
-        mobile,
+  state: {
+    selectedSeat: state?.selectedSeat,
+    busName: state?.busName,
+    from: state?.from,
+    to: state?.to,
+    date: state?.date,
       },
-    });
+    })
   };
 
   return (
@@ -70,6 +72,14 @@ export default function Otp() {
         <p className="text-center text-yellow-400 mb-4">
           Selected Seat: {state?.selectedSeat}
         </p>
+
+        <p className="text-center text-zinc-400 mb-2">
+  {state?.from || "N/A"} → {state?.to || "N/A"}
+</p>
+
+<p className="text-center text-zinc-400 mb-4">
+  Journey Date: {state?.date || "N/A"}
+</p>
 
         <input
           type="tel"

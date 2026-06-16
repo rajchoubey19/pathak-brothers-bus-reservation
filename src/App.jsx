@@ -7,6 +7,10 @@ import Passenger from "./pages/Passenger.jsx";
 import Ticket from "./pages/Ticket.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import AdminLogin from "./pages/AdminLogin.jsx";
+import BottomNav from "./components/BottomNav.jsx";
+import MyBookings from "./pages/MyBookings.jsx";
+import Account from "./pages/Account.jsx";
+import Contact from "./pages/Contact.jsx";
 
 function App() {
   return (
@@ -20,7 +24,12 @@ function App() {
         <Route path="/ticket" element={<Ticket />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path="/my-bookings" element={<MyBookings />} />
+        <Route path="/login" element={<Account />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
+      
+      <BottomNav />
     </BrowserRouter>
   );
 }
