@@ -54,20 +54,46 @@ export default function Ticket() {
   doc.text(`Bus Name: ${state?.busName || "Shiv Shakti"}`, 30, 130);
   doc.text(`Seat Number: ${state?.selectedSeat || "N/A"}`, 30, 145);
   doc.text(`Journey Date: ${state?.journeyDate || "N/A"}`, 30, 160);
+  doc.text(`Fare Per Seat: ₹${state?.fare || 0}`, 30, 175);
+
+doc.text(
+  `Total Fare: ₹${state?.totalFare || 0}`,
+  30,
+  190
+);
 
   // Passenger details
   doc.setFont("helvetica", "bold");
-  doc.text("Passenger Details", 30, 185);
+  doc.text("Passenger Details", 30, 210);
 
   doc.setFont("helvetica", "normal");
-  doc.text(`Name: ${state?.name || "N/A"}`, 30, 200);
-  doc.text(`Age: ${state?.age || "N/A"}`, 30, 215);
-  doc.text(`Gender: ${state?.gender || "N/A"}`, 30, 230);
-  doc.text(`Mobile: ${state?.mobile || "N/A"}`, 30, 240);
 
+let y = 225;
+
+state?.passengers?.forEach((passenger, index) => {
+  doc.text(
+    `Passenger ${index + 1} (Seat ${passenger.seat})`,
+    30,
+    y
+  );
+
+  doc.text(
+    `${passenger.name} | Age: ${passenger.age} | ${passenger.gender}`,
+    40,
+    y + 10
+  );
+
+  y += 20;
+});
+
+doc.text(`Mobile: ${state?.mobile || "N/A"}`, 30, y + 10);
   // Booking ID
   doc.setFont("helvetica", "bold");
-  doc.text(`Booking ID: ${state?.bookingId || "N/A"}`, 30, 255);
+  doc.text(
+  `Booking ID: ${state?.bookingId || "N/A"}`,
+  30,
+  y + 25
+);
 
   doc.setFontSize(10);
   doc.setTextColor(100, 100, 100);
@@ -120,19 +146,33 @@ export default function Ticket() {
           </div>
 
           <div className="bg-black border border-zinc-700 rounded-2xl p-5 mb-6">
-            <h3 className="text-2xl font-bold text-yellow-400 mb-4">
-              Passenger Details
-            </h3>
+  <h3 className="text-2xl font-bold text-yellow-400 mb-4">
+    Passenger Details
+  </h3>
 
-            <div className="grid md:grid-cols-2 gap-4 text-lg">
-              <p><span className="text-zinc-400">Name:</span> {state?.name || "N/A"}</p>
-              <p><span className="text-zinc-400">Mobile:</span> {state?.mobile || "N/A"}</p>
-              <p><span className="text-zinc-400">Age:</span> {state?.age || "N/A"}</p>
-              <p><span className="text-zinc-400">Gender:</span> {state?.gender || "N/A"}</p>
-              <p><span className="text-zinc-400">Email:</span> {state?.email || "N/A"}</p>
-              <p><span className="text-zinc-400">Booking ID:</span> {state?.bookingId || "N/A"}</p>
-            </div>
-          </div>
+  <div className="mb-4">
+    <p><span className="text-zinc-400">Mobile:</span> {state?.mobile || "N/A"}</p>
+    <p><span className="text-zinc-400">Email:</span> {state?.email || "N/A"}</p>
+    <p><span className="text-zinc-400">Booking ID:</span> {state?.bookingId || "N/A"}</p>
+  </div>
+
+  <div className="space-y-3">
+    {state?.passengers?.map((passenger, index) => (
+      <div
+        key={index}
+        className="border border-zinc-700 rounded-xl p-3"
+      >
+        <p className="font-bold text-yellow-400">
+          Passenger {index + 1} - Seat {passenger.seat}
+        </p>
+
+        <p>Name: {passenger.name}</p>
+        <p>Age: {passenger.age}</p>
+        <p>Gender: {passenger.gender}</p>
+      </div>
+    ))}
+  </div>
+</div>
 
           <div className="bg-green-500/10 border border-green-500 rounded-2xl p-4 text-center mb-6">
             <p className="text-green-400 font-bold text-xl">

@@ -25,7 +25,18 @@ const filteredBookings = bookingsData.filter(
 booking.toCity?.toLowerCase().trim() === state?.to?.toLowerCase().trim()
 );
 
-setRouteBookings(filteredBookings.length);
+   const totalBookedSeats = filteredBookings.reduce(
+  (total, booking) => {
+    if (booking.selectedSeats) {
+      return total + booking.selectedSeats.length;
+    }
+
+    return total + 1;
+  },
+  0
+);
+
+setRouteBookings(totalBookedSeats);
     const routesData = querySnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -103,6 +114,7 @@ bus.to?.toLowerCase().trim() === state?.to?.toLowerCase().trim()
     navigate("/booking", {
     state: {
   busName: bus.busName,
+  fare: bus.fare,
   from: state?.from,
   to: state?.to,
   date: state?.date,

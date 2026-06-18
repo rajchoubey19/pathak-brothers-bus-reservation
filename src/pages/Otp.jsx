@@ -48,8 +48,9 @@ export default function Otp() {
 
     navigate("/passenger", {
   state: {
-    selectedSeat: state?.selectedSeat,
+    selectedSeats: state?.selectedSeats,
     busName: state?.busName,
+    fare: state?.fare,
     from: state?.from,
     to: state?.to,
     date: state?.date,
@@ -70,7 +71,7 @@ export default function Otp() {
         </p>
 
         <p className="text-center text-yellow-400 mb-4">
-          Selected Seat: {state?.selectedSeat}
+          Selected Seats: {state?.selectedSeats?.join(", ")}
         </p>
 
         <p className="text-center text-zinc-400 mb-2">

@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "../firebase";
 
@@ -10,12 +10,25 @@ export default function Passenger() {
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
+  const [passengers, setPassengers] = useState([]);
   const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
   const [journeyDate, setJourneyDate] = useState("");
   const [fromCity, setFromCity] = useState("");
   const [toCity, setToCity] = useState("");
   const { state } = useLocation();
+  useEffect(() => {
+  if (state?.selectedSeats) {
+    const passengerData = state.selectedSeats.map((seat) => ({
+      seat,
+      name: "",
+      age: "",
+      gender: "",
+    }));
+
+    setPassengers(passengerData);
+  }
+}, [state]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black text-white flex items-center justify-center p-6">
@@ -26,7 +39,7 @@ export default function Passenger() {
           Passenger Details
         </h1>
         <p className="text-yellow-400 text-center mb-4">
-        Selected Seat: {state?.selectedSeat}
+        Selected Seats: {state?.selectedSeats?.join(", ")}
         </p>
 
         <p className="text-yellow-400 text-center mb-4">
@@ -41,32 +54,55 @@ export default function Passenger() {
   Journey Date: {state?.date || "N/A"}
 </p>
 
-        <input
-          type="text"
-          placeholder="Full Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full bg-black border border-zinc-700 p-4 rounded-xl outline-none mb-4"
-        />
+        {passengers.map((passenger, index) => (
+  <div
+    key={index}
+    className="bg-black border border-zinc-700 rounded-2xl p-4 mb-4"
+  >
+    <h3 className="text-yellow-400 font-bold mb-3">
+      Passenger {index + 1} (Seat {passenger.seat})
+    </h3>
 
-        <input
-          type="number"
-          placeholder="Age"
-          value={age}
-          onChange={(e) => setAge(e.target.value)}
-          className="w-full bg-black border border-zinc-700 p-4 rounded-xl outline-none mb-4"
-        />
+    <input
+      type="text"
+      placeholder="Full Name"
+      value={passenger.name}
+      onChange={(e) => {
+        const updated = [...passengers];
+        updated[index].name = e.target.value;
+        setPassengers(updated);
+      }}
+      className="w-full bg-zinc-900 border border-zinc-700 p-3 rounded-xl mb-3"
+    />
 
-        <select
-          value={gender}
-          onChange={(e) => setGender(e.target.value)}
-          className="w-full bg-black border border-zinc-700 p-4 rounded-xl outline-none mb-4"
-        >
-          <option value="">Select Gender</option>
-          <option>Male</option>
-          <option>Female</option>
-          <option>Other</option>
-        </select>
+    <input
+      type="number"
+      placeholder="Age"
+      value={passenger.age}
+      onChange={(e) => {
+        const updated = [...passengers];
+        updated[index].age = e.target.value;
+        setPassengers(updated);
+      }}
+      className="w-full bg-zinc-900 border border-zinc-700 p-3 rounded-xl mb-3"
+    />
+
+    <select
+      value={passenger.gender}
+      onChange={(e) => {
+        const updated = [...passengers];
+        updated[index].gender = e.target.value;
+        setPassengers(updated);
+      }}
+      className="w-full bg-zinc-900 border border-zinc-700 p-3 rounded-xl"
+    >
+      <option value="">Select Gender</option>
+      <option>Male</option>
+      <option>Female</option>
+      <option>Other</option>
+    </select>
+  </div>
+))}
 
         <input
           type="tel"
@@ -128,33 +164,36 @@ export default function Passenger() {
          }
        try {
       await addDoc(collection(db, "bookings"), {
-        name,
-        age,
-        gender,
+        passengers,
         mobile,
         email,
         bookingId,
-        selectedSeat: state?.selectedSeat,
+        selectedSeats: state?.selectedSeats,
+        selectedSeat: state?.selectedSeats?.join(", "),
         busName: state?.busName || "Shiv Shakti",
         journeyDate: state?.date || "N/A", 
         fromCity: state?.from || "N/A",
         toCity: state?.to || "N/A",
         createdAt: new Date(),
+        busName: state?.busName || "Shiv Shakti",
+        fare: state?.fare || 0,
+        totalFare: (Number(state?.fare) || 0) * (state?.selectedSeats?.length || 1),
       });
 
       navigate("/ticket", {
         state: {
-          name,
-          age,
-          gender,
+          passengers,
           mobile,
           email,
           bookingId,
-          selectedSeat: state?.selectedSeat,
+          selectedSeats: state?.selectedSeats,
+          selectedSeat: state?.selectedSeats?.join(", "),
           busName: state?.busName,
           journeyDate: state?.date,
           fromCity: state?.from,
           toCity: state?.to,
+          fare: state?.fare,
+          totalFare: (Number(state?.fare) || 0) * (state?.selectedSeats?.length || 1),
         },
       });
        } catch (error) {

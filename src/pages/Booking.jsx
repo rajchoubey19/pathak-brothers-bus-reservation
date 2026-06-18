@@ -4,7 +4,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 
 export default function Booking() {
-  const [selectedSeat, setSelectedSeat] = useState(null);
+  const [selectedSeats, setSelectedSeats] = useState([]);
   const [bookedSeats, setBookedSeats] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -14,9 +14,18 @@ export default function Booking() {
   useEffect(() => {
     const fetchBookedSeats = async () => {
       const querySnapshot = await getDocs(collection(db, "bookings"));
-      const seats = querySnapshot.docs.map((doc) => doc.data().selectedSeat);
+      const seats = querySnapshot.docs.flatMap((doc) => {
+  const data = doc.data();
 
-      setBookedSeats(seats);
+  if (data.selectedSeats) {
+    return data.selectedSeats;
+  }
+
+  return [Number(data.selectedSeat)];
+});
+
+setBookedSeats(seats);
+
       setLoading(false);
     };
 
@@ -25,13 +34,21 @@ export default function Booking() {
 
   const Seat = ({ seatNo }) => {
     const isBooked = bookedSeats.includes(seatNo);
-    const isSelected = selectedSeat === seatNo;
+    const isSelected = selectedSeats.includes(seatNo);
 
     return (
       <button
         onClick={() => {
-          if (!isBooked) setSelectedSeat(seatNo);
-        }}
+  if (isBooked) return;
+
+  if (selectedSeats.includes(seatNo)) {
+    setSelectedSeats(
+      selectedSeats.filter((seat) => seat !== seatNo)
+    );
+  } else {
+    setSelectedSeats([...selectedSeats, seatNo]);
+  }
+}}
         disabled={isBooked}
         className={`w-12 h-12 rounded-xl border-2 flex items-center justify-center text-sm font-bold transition-all
           ${
@@ -125,22 +142,23 @@ export default function Booking() {
             </div>
           </div>
 
-          {selectedSeat && (
+          {selectedSeats.length > 0 && (
             <div className="mt-8 text-center">
               <p className="text-2xl font-bold text-yellow-400">
-                Selected Seat: {selectedSeat}
+                Selected Seats: {selectedSeats.join(", ")}
               </p>
 
               <button
                 onClick={() => {
                   navigate("/otp", {
                   state: {
-                   selectedSeat: selectedSeat,
-                   busName: state?.busName,
-                   from: state?.from,
-                   to: state?.to,
-                   date: state?.date,
-                   },
+                 selectedSeats: selectedSeats,
+                 busName: state?.busName,
+                 fare: state?.fare,
+                 from: state?.from,
+                 to: state?.to,
+                 date: state?.date,
+                 },
                 });
                 }}
                 className="mt-4 bg-yellow-400 text-black px-8 py-3 rounded-xl font-bold hover:scale-105 transition"
