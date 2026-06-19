@@ -54,10 +54,10 @@ export default function Ticket() {
   doc.text(`Bus Name: ${state?.busName || "Shiv Shakti"}`, 30, 130);
   doc.text(`Seat Number: ${state?.selectedSeat || "N/A"}`, 30, 145);
   doc.text(`Journey Date: ${state?.journeyDate || "N/A"}`, 30, 160);
-  doc.text(`Fare Per Seat: ₹${state?.fare || 0}`, 30, 175);
+  doc.text(`Fare Per Seat: Rs. ${state?.fare || 0}`, 30, 175);
 
 doc.text(
-  `Total Fare: ₹${state?.totalFare || 0}`,
+  `Total Fare: Rs. ${state?.totalFare || 0}`,
   30,
   190
 );
