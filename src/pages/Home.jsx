@@ -64,7 +64,7 @@ const handleSearch = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative flex flex-col items-center justify-center text-center px-5 min-h-[80vh]">
+      <section className="relative flex flex-col items-center justify-center text-center px-5 min-h-fit pb-16">
 
       <div className="absolute w-[500px] h-[500px] bg-yellow-500/10 blur-[120px] rounded-full pointer-events-none"></div>
 
@@ -128,6 +128,23 @@ const handleSearch = () => {
 
   </div>
 
+</div>
+
+<div className="mt-6 bg-zinc-900 border border-zinc-700 rounded-3xl p-5 w-full max-w-5xl">
+  <h3 className="text-yellow-400 font-bold text-xl mb-3">
+    Available Routes
+  </h3>
+
+  <div className="grid md:grid-cols-3 gap-3 text-zinc-300">
+    <p>📍 Indore → Bhopal</p>
+    <p>📍 Indore → Ujjain</p>
+    <p>📍 Indore → Jabalpur</p>
+  </div>
+
+  <p className="text-zinc-500 mt-4 text-sm">
+    Currently only a few routes are available for testing purposes.
+    More routes will be added in future updates.
+  </p>
 </div>
 
   </section>
