@@ -1,3 +1,4 @@
+import { formatDate } from "../utils/dateFormat";
 import { useNavigate, useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
@@ -65,8 +66,7 @@ setBookedSeats(seats);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black text-white p-6 md:p-8">
-      <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-4">
+<div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black text-white p-6 md:p-8 pb-28">      <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-4">
         Select Your Seat
       </h1>
 

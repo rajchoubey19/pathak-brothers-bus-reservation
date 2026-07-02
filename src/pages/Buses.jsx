@@ -1,3 +1,4 @@
+import { formatDate } from "../utils/dateFormat";
 import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
@@ -66,7 +67,7 @@ bus.to?.toLowerCase().trim() === state?.to?.toLowerCase().trim()
   </p>
 
   <p className="text-zinc-400 mt-2">
-    Journey Date: {state?.date || "N/A"}
+    Journey Date: {formatDate(state?.date)}
   </p>
 </div>
 

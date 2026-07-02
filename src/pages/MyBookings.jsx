@@ -1,3 +1,4 @@
+import { formatDate } from "../utils/dateFormat";
 import { useState, useEffect } from "react";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../firebase";
@@ -96,7 +97,7 @@ const cancelBooking = async (bookingId) => {
 
       <p>🚌 Bus: {booking.busName}</p>
       <p>💺 Seat: {booking.selectedSeat}</p>
-      <p>📅 Date: {booking.journeyDate}</p>
+      <p>📅 Date: {formatDate(state?.journeyDate)}</p>
       <p>🎫 Booking ID: {booking.bookingId}</p>
       {booking.passengers && booking.passengers.length > 0 && (
   <div className="mt-4">

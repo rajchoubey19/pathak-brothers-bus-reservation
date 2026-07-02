@@ -1,3 +1,4 @@
+import { formatDate } from "../utils/dateFormat";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 export default function Home() {
@@ -27,8 +28,7 @@ const handleSearch = () => {
   });
 };
   return (
-    <div className="min-h-screen text-white bg-gradient-to-br from-black via-zinc-900 to-black">
-
+<div className="min-h-screen w-full overflow-x-hidden text-white bg-gradient-to-br from-black via-zinc-900 to-black pb-24">
       {/* Navbar */}
       <nav className="flex justify-between items-center px-8 py-5 border-b border-zinc-800 backdrop-blur-md bg-black/40 sticky top-0 z-50">
 
@@ -66,8 +66,7 @@ const handleSearch = () => {
       {/* Hero Section */}
       <section className="relative flex flex-col items-center justify-center text-center px-5 min-h-fit pb-16">
 
-      <div className="absolute w-[500px] h-[500px] bg-yellow-500/10 blur-[120px] rounded-full pointer-events-none"></div>
-
+<div className="absolute w-[250px] h-[250px] md:w-[500px] md:h-[500px] bg-yellow-500/10 blur-[120px] rounded-full pointer-events-none"></div>
         <p className="text-yellow-400 text-lg mb-4 mt-16">
           Safe • Comfortable • Affordable
         </p>
@@ -93,10 +92,8 @@ const handleSearch = () => {
         </div>
         {/* Search Box */}
 
-<div className="mt-14 bg-zinc-900/70 backdrop-blur-md border border-zinc-700 p-6 rounded-3xl w-full max-w-5xl shadow-2xl">
-
-  <div className="grid md:grid-cols-4 gap-5">
-
+<div className="mt-14 bg-zinc-900/70 backdrop-blur-md border border-zinc-700 p-5 rounded-3xl w-full max-w-5xl shadow-2xl overflow-hidden">
+<div className="grid grid-cols-1 md:grid-cols-4 gap-5">
    <input
     type="text"
     placeholder="From"
@@ -214,8 +211,7 @@ const handleSearch = () => {
 
 <footer
   id="contact"
-  className="border-t border-zinc-800 py-16 px-8 mt-20 bg-black"
->
+className="border-t border-zinc-800 pt-16 pb-28 px-8 mt-20 bg-black">
   <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-10">
 
     {/* Company */}

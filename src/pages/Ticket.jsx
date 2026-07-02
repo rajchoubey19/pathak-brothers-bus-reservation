@@ -1,3 +1,4 @@
+import { formatDate } from "../utils/dateFormat";
 import { useLocation } from "react-router-dom";
 import jsPDF from "jspdf";
 import { QRCodeCanvas } from "qrcode.react";
@@ -5,108 +6,100 @@ import { QRCodeCanvas } from "qrcode.react";
 export default function Ticket() {
   const { state } = useLocation();
 
-  const downloadTicket = () => {
+ const downloadTicket = () => {
   const doc = new jsPDF();
 
-  // Outer border
+  const passenger = state?.passengers?.[0];
+
   doc.setDrawColor(255, 193, 7);
   doc.setLineWidth(1);
   doc.roundedRect(15, 15, 180, 250, 5, 5);
 
-  // Header
   doc.setFillColor(255, 193, 7);
-  doc.roundedRect(15, 15, 180, 35, 5, 5, "F");
+  doc.roundedRect(15, 15, 180, 30, 5, 5, "F");
 
   doc.setTextColor(0, 0, 0);
-  doc.setFontSize(24);
   doc.setFont("helvetica", "bold");
-  doc.text("PATHAK BROTHERS", 105, 32, { align: "center" });
+  doc.setFontSize(22);
+  doc.text("PATHAK BROTHERS", 105, 28, { align: "center" });
 
-  doc.setFontSize(12);
-  doc.text("Bus Reservation Ticket", 105, 43, { align: "center" });
+  doc.setFontSize(11);
+  doc.text("Bus Reservation Ticket", 105, 38, { align: "center" });
 
-  // Status
   doc.setTextColor(0, 128, 0);
-  doc.setFontSize(16);
-  doc.text("BOOKING CONFIRMED", 105, 65, { align: "center" });
-
-  // Route box
-  doc.setDrawColor(220, 220, 220);
-  doc.roundedRect(25, 78, 160, 35, 4, 4);
+  doc.setFontSize(15);
+  doc.text("BOOKING CONFIRMED", 105, 62, { align: "center" });
 
   doc.setTextColor(0, 0, 0);
-  doc.setFontSize(11);
-  doc.text("ROUTE", 30, 88);
-
   doc.setFontSize(18);
   doc.setFont("helvetica", "bold");
-   doc.text(
-  `${state?.fromCity || "N/A"} - ${state?.toCity || "N/A"}`,
-  105,
-  103,
-  { align: "center" }
-   );
-
-  // Trip details
-  doc.setFontSize(12);
-  doc.setFont("helvetica", "normal");
-
-  doc.text(`Bus Name: ${state?.busName || "Shiv Shakti"}`, 30, 130);
-  doc.text(`Seat Number: ${state?.selectedSeat || "N/A"}`, 30, 145);
-  doc.text(`Journey Date: ${state?.journeyDate || "N/A"}`, 30, 160);
-  doc.text(`Fare Per Seat: Rs. ${state?.fare || 0}`, 30, 175);
-
-doc.text(
-  `Total Fare: Rs. ${state?.totalFare || 0}`,
-  30,
-  190
-);
-
-  // Passenger details
-  doc.setFont("helvetica", "bold");
-  doc.text("Passenger Details", 30, 210);
-
-  doc.setFont("helvetica", "normal");
-
-let y = 225;
-
-state?.passengers?.forEach((passenger, index) => {
   doc.text(
-    `Passenger ${index + 1} (Seat ${passenger.seat})`,
-    30,
-    y
+    `${state?.fromCity || "N/A"} to ${state?.toCity || "N/A"}`,
+    105,
+    80,
+    { align: "center" }
   );
 
-  doc.text(
-    `${passenger.name} | Age: ${passenger.age} | ${passenger.gender}`,
-    40,
-    y + 10
-  );
+  // Trip Details Box
+  doc.setDrawColor(255, 193, 7);
+  doc.roundedRect(20, 95, 78, 85, 4, 4);
 
-  y += 20;
-});
-
-doc.text(`Mobile: ${state?.mobile || "N/A"}`, 30, y + 10);
-  // Booking ID
+  doc.setFontSize(13);
   doc.setFont("helvetica", "bold");
-  doc.text(
-  `Booking ID: ${state?.bookingId || "N/A"}`,
-  30,
-  y + 25
-);
+  doc.text("Trip Details", 59, 108, { align: "center" });
 
   doc.setFontSize(10);
-  doc.setTextColor(100, 100, 100);
-  doc.text("Thank you for choosing Pathak Brothers.", 105, 272, {
-    align: "center",
-  });
+  doc.setFont("helvetica", "normal");
+  doc.text(`Bus : ${state?.busName || "N/A"}`, 27, 125);
+  doc.text(`Seat : ${state?.selectedSeat || "N/A"}`, 27, 138);
+  doc.text(`Date : ${formatDate(state?.journeyDate)}`, 27, 151);
+  doc.text(`Fare : Rs. ${state?.fare || 0}`, 27, 164);
+  doc.text(`Total : Rs. ${state?.totalFare || 0}`, 27, 177);
 
-  doc.save("pathak-brothers-ticket.pdf");
+  // Passenger Details Box
+  doc.roundedRect(112, 95, 78, 85, 4, 4);
+
+  doc.setFontSize(13);
+  doc.setFont("helvetica", "bold");
+  doc.text("Passenger Details", 151, 108, { align: "center" });
+
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  doc.text(`Name : ${passenger?.name || "N/A"}`, 119, 125);
+  doc.text(`Age : ${passenger?.age || "N/A"}`, 119, 138);
+  doc.text(`Gender : ${passenger?.gender || "N/A"}`, 119, 151);
+  doc.text(`Mobile : ${state?.mobile || "N/A"}`, 119, 164);
+  doc.text(`Booking : ${state?.bookingId || "N/A"}`, 119, 177);
+
+  doc.setDrawColor(220, 220, 220);
+  doc.line(25, 215, 185, 215);
+
+  doc.setTextColor(100, 100, 100);
+  doc.setFontSize(11);
+  doc.setFont("helvetica", "normal");
+  doc.text("Thank you for choosing", 105, 232, { align: "center" });
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Pathak Brothers", 105, 242, { align: "center" });
+
+  doc.setFont("helvetica", "normal");
+  doc.text("Have a Safe Journey", 105, 252, { align: "center" });
+
+  const pdfBlob = doc.output("blob");
+  const pdfUrl = URL.createObjectURL(pdfBlob);
+
+  const link = document.createElement("a");
+  link.href = pdfUrl;
+  link.download = "pathak-brothers-ticket.pdf";
+  link.click();
+
+  setTimeout(() => {
+    URL.revokeObjectURL(pdfUrl);
+  }, 1000);
 };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black text-white flex items-center justify-center p-6">
-
+<div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black text-white flex items-center justify-center p-6 pb-28">
       <div id="ticket-card" className="w-full max-w-2xl bg-zinc-900 border border-yellow-400 rounded-[32px] overflow-hidden shadow-2xl">
         <div className="bg-yellow-400 text-black p-6 text-center">
           <h1 className="text-4xl font-extrabold">
@@ -140,9 +133,11 @@ doc.text(`Mobile: ${state?.mobile || "N/A"}`, 30, y + 10);
             </div>
 
             <div className="bg-black border border-zinc-700 rounded-2xl p-4">
-              <p className="text-zinc-400 text-sm">Journey Date</p>
-              <p className="text-xl font-bold">{state?.journeyDate || "N/A"}</p>
-            </div>
+  <p className="text-zinc-400 text-sm">Journey Date</p>
+  <p className="text-xl font-bold">
+    {formatDate(state?.journeyDate) || "N/A"}
+  </p>
+</div>
           </div>
 
           <div className="bg-black border border-zinc-700 rounded-2xl p-5 mb-6">

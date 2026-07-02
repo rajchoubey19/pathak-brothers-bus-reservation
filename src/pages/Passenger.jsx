@@ -1,3 +1,4 @@
+import { formatDate } from "../utils/dateFormat";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { collection, addDoc } from "firebase/firestore";
@@ -31,10 +32,8 @@ export default function Passenger() {
 }, [state]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black text-white flex items-center justify-center p-6">
-
-      <div className="w-full max-w-lg bg-zinc-900 border border-zinc-700 rounded-3xl p-8 shadow-2xl">
-
+<div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black text-white flex items-center justify-center p-6 pb-28">
+<div className="w-full max-w-lg bg-zinc-900 border border-zinc-700 rounded-3xl p-8 shadow-2xl mb-24">
         <h1 className="text-4xl font-bold text-center text-yellow-400 mb-8">
           Passenger Details
         </h1>
@@ -164,21 +163,22 @@ export default function Passenger() {
          }
        try {
       await addDoc(collection(db, "bookings"), {
-        passengers,
-        mobile,
-        email,
-        bookingId,
-        selectedSeats: state?.selectedSeats,
-        selectedSeat: state?.selectedSeats?.join(", "),
-        busName: state?.busName || "Shiv Shakti",
-        journeyDate: state?.date || "N/A", 
-        fromCity: state?.from || "N/A",
-        toCity: state?.to || "N/A",
-        createdAt: new Date(),
-        busName: state?.busName || "Shiv Shakti",
-        fare: state?.fare || 0,
-        totalFare: (Number(state?.fare) || 0) * (state?.selectedSeats?.length || 1),
-      });
+  passengers,
+  mobile,
+  email,
+  bookingId,
+  selectedSeats: state?.selectedSeats,
+  selectedSeat: state?.selectedSeats?.join(", "),
+  busName: state?.busName || "Shiv Shakti",
+  journeyDate: state?.date || "N/A",
+  fromCity: state?.from || "N/A",
+  toCity: state?.to || "N/A",
+  createdAt: new Date(),
+  fare: state?.fare || 0,
+  totalFare:
+    (Number(state?.fare) || 0) *
+    (state?.selectedSeats?.length || 1),
+});
 
       navigate("/ticket", {
         state: {
